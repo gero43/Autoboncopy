@@ -4,7 +4,6 @@
   window.fetch = function(url, opts) {
     if (url && url.startsWith('/api/cars')) {
       return _fetch('/cars-data.json').then(function(r) { return r.json(); }).then(function(data) {
-        // Handle cursor-based pagination
         var params = new URLSearchParams(url.split('?')[1] || '');
         var limit = parseInt(params.get('limit') || '24');
         var cursor = params.get('cursor');
@@ -14,8 +13,15 @@
         var page = cars.slice(startIdx, startIdx + limit);
         var nextCursor = startIdx + limit < cars.length ? cars[startIdx + limit - 1].id : null;
         var result = {cars: page, totalCount: data.totalCount, nextCursor: nextCursor};
+        console.log('[CCC] Serving', page.length, 'cars from local data');
         return {ok:true, json:function(){return Promise.resolve(result);}};
+      }).catch(function(err) {
+        console.error('[CCC] Failed to load cars-data.json:', err);
+        return {ok:false, json:function(){return Promise.resolve({cars:[]});}};
       });
+    }
+    if (url && (url.startsWith('/api/reviews') || url.startsWith('/api/saved-cars') || url.startsWith('/api/verify') || url.startsWith('/api/auth'))) {
+      return Promise.resolve({ok:true, json:function(){return Promise.resolve({reviews:[], cars:[], success:true});}});
     }
     if (url === '/api/contact' || url === '/api/forms') {
       var body = {};
