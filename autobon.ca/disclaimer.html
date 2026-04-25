@@ -3,21 +3,16 @@
 (function() {
   var _fetch = window.fetch;
   window.fetch = function(url, opts) {
-    );}});
-    }
     if (url === '/api/contact' || url === '/api/forms') {
       var body = {};
       try { body = JSON.parse(opts && opts.body ? opts.body : '{}'); } catch(e) {}
-      // Flatten nested objects so FormSubmit can read them
       function flatten(obj, prefix) {
         return Object.keys(obj).reduce(function(acc, k) {
           var val = obj[k];
           var key = prefix ? prefix + '_' + k : k;
           if (val && typeof val === 'object' && !Array.isArray(val)) {
             Object.assign(acc, flatten(val, key));
-          } else {
-            acc[key] = val;
-          }
+          } else { acc[key] = val; }
           return acc;
         }, {});
       }
