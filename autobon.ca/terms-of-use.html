@@ -2,6 +2,21 @@
 (function() {
   var _fetch = window.fetch;
   window.fetch = function(url, opts) {
+    if (url && url.startsWith('/api/cars')) {
+      return _fetch('/cars-data.json').then(function(r) { return r.json(); }).then(function(data) {
+        // Handle cursor-based pagination
+        var params = new URLSearchParams(url.split('?')[1] || '');
+        var limit = parseInt(params.get('limit') || '24');
+        var cursor = params.get('cursor');
+        var cars = data.cars || [];
+        var startIdx = 0;
+        if (cursor) { var idx = cars.findIndex(function(c){return c.id===cursor;}); if(idx>-1) startIdx=idx+1; }
+        var page = cars.slice(startIdx, startIdx + limit);
+        var nextCursor = startIdx + limit < cars.length ? cars[startIdx + limit - 1].id : null;
+        var result = {cars: page, totalCount: data.totalCount, nextCursor: nextCursor};
+        return {ok:true, json:function(){return Promise.resolve(result);}};
+      });
+    }
     if (url === '/api/contact' || url === '/api/forms') {
       var body = {};
       try { body = JSON.parse(opts && opts.body ? opts.body : '{}'); } catch(e) {}
