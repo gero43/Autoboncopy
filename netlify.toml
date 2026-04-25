@@ -1,3 +1,7 @@
 [build]
   command = ""
   publish = "autobon.ca"
+
+[[edge_functions]]
+  path = "/_next/image"
+  function = "next-image"
