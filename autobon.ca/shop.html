@@ -1,22 +1,5 @@
 <!DOCTYPE html><!--dvwbbBX67sGWVzo_uouX3--><html lang="en"><head>
 <script>
-// Debug: monitor all fetch calls
-var __origFetch = window.fetch;
-window.fetch = function(url, opts) {
-  if (typeof url === 'string' && url.includes('/api/')) {
-    console.log('[DEBUG] fetch called:', url);
-    return __origFetch.apply(this, arguments).then(function(r) {
-      console.log('[DEBUG] fetch response:', url, 'status:', r.status, 'ok:', r.ok);
-      return r;
-    }).catch(function(err) {
-      console.error('[DEBUG] fetch ERROR:', url, err.message);
-      throw err;
-    });
-  }
-  return __origFetch.apply(this, arguments);
-};
-</script>
-<script>
 (function() {
   var _fetch = window.fetch;
   window.fetch = function(url, opts) {
