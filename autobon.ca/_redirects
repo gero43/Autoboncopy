@@ -1,3 +1,7 @@
+# Proxy API calls to autobon.ca (bypasses CORS)
+/api/cars*    https://autobon.ca/api/cars:splat    200
+/api/reviews*    https://autobon.ca/api/reviews:splat    200
+
 /shop    /shop.html    200
 /about-us    /about-us.html    200
 /contact-us    /contact-us.html    200
